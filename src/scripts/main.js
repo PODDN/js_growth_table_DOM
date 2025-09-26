@@ -1,73 +1,75 @@
 'use strict';
 
-// кнопки
-const appendRow = document.querySelector('.append-row');
-const appendColumn = document.querySelector('.append-column');
-const removeColumn = document.querySelector('.remove-column');
-const removeRow = document.querySelector('.remove-row');
+const appendRowBtn = document.querySelector('.append-row');
+const removeRowBtn = document.querySelector('.remove-row');
+const appendColumnBtn = document.querySelector('.append-column');
+const removeColumnBtn = document.querySelector('.remove-column');
+const table = document.querySelector('.field');
 
-// таблиця
-const field = document.querySelector('.field');
+const MAX = 10;
+const MIN = 2;
 
-// додавання рядка
-appendRow.addEventListener('click', () => {
-  const firstRow = field.querySelector('tr');
-  const columns = firstRow.querySelectorAll('td');
-  const newTr = document.createElement('tr');
+function getRowCount() {
+  return table.rows.length;
+}
 
-  for (let i = 0; i < columns.length; i++) {
-    newTr.append(document.createElement('td'));
+function getColumnCount() {
+  return table.rows[0].cells.length;
+}
+
+function updateButtons() {
+  const rowCount = getRowCount();
+  const colCount = getColumnCount();
+
+  appendRowBtn.disabled = rowCount >= MAX;
+  removeRowBtn.disabled = rowCount <= MIN;
+  appendColumnBtn.disabled = colCount >= MAX;
+  removeColumnBtn.disabled = colCount <= MIN;
+}
+
+appendRowBtn.addEventListener('click', () => {
+  const rowCount = getRowCount();
+  const colCount = getColumnCount();
+
+  if (rowCount < MAX) {
+    const newRow = table.insertRow();
+
+    for (let i = 0; i < colCount; i++) {
+      newRow.insertCell();
+    }
+    updateButtons();
   }
-
-  field.append(newTr);
-
-  // після додавання перевіряємо кількість рядків
-  const allRows = field.querySelectorAll('tr');
-
-  appendRow.disabled = allRows.length >= 10;
-  removeRow.disabled = allRows.length <= 2;
 });
 
-// видалення рядка
-removeRow.addEventListener('click', () => {
-  const rows = field.querySelectorAll('tr');
+removeRowBtn.addEventListener('click', () => {
+  const rowCount = getRowCount();
 
-  if (rows.length > 2) {
-    rows[rows.length - 1].remove();
+  if (rowCount > MIN) {
+    table.deleteRow(rowCount - 1);
+    updateButtons();
   }
-
-  const allRows = field.querySelectorAll('tr');
-
-  appendRow.disabled = allRows.length >= 10;
-  removeRow.disabled = allRows.length <= 2;
 });
 
-// додавання колонки
-appendColumn.addEventListener('click', () => {
-  const rows = field.querySelectorAll('tr');
+appendColumnBtn.addEventListener('click', () => {
+  const colCount = getColumnCount();
 
-  rows.forEach((row) => row.append(document.createElement('td')));
-
-  const totalColumns = rows[0].querySelectorAll('td').length;
-
-  appendColumn.disabled = totalColumns >= 10;
-  removeColumn.disabled = totalColumns <= 2;
-});
-
-// видалення колонки
-removeColumn.addEventListener('click', () => {
-  const rows = field.querySelectorAll('tr');
-  let totalColumns = rows[0].querySelectorAll('td').length;
-
-  if (totalColumns > 2) {
-    rows.forEach((row) => {
-      const lastTd = row.querySelector('td:last-child');
-
-      lastTd.remove();
-    });
+  if (colCount < MAX) {
+    for (const row of table.rows) {
+      row.insertCell();
+    }
+    updateButtons();
   }
-
-  totalColumns = rows[0].querySelectorAll('td').length;
-  appendColumn.disabled = totalColumns >= 10;
-  removeColumn.disabled = totalColumns <= 2;
 });
+
+removeColumnBtn.addEventListener('click', () => {
+  const colCount = getColumnCount();
+
+  if (colCount > MIN) {
+    for (const row of table.rows) {
+      row.deleteCell(colCount - 1);
+    }
+    updateButtons();
+  }
+});
+
+updateButtons();
