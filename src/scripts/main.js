@@ -27,49 +27,53 @@ function updateButtons() {
   removeColumnBtn.disabled = colCount <= MIN;
 }
 
-appendRowBtn.addEventListener('click', () => {
-  const rowCount = getRowCount();
-  const colCount = getColumnCount();
+if (appendColumnBtn && appendRowBtn && removeColumnBtn && removeRowBtn) {
+  appendRowBtn.addEventListener('click', () => {
+    const rowCount = getRowCount();
+    const colCount = getColumnCount();
 
-  if (rowCount < MAX) {
-    const newRow = table.insertRow();
+    if (rowCount < MAX) {
+      const newRow = table.insertRow();
 
-    for (let i = 0; i < colCount; i++) {
-      newRow.insertCell();
+      for (let i = 0; i < colCount; i++) {
+        newRow.insertCell();
+      }
+      updateButtons();
     }
-    updateButtons();
-  }
-});
+  });
 
-removeRowBtn.addEventListener('click', () => {
-  const rowCount = getRowCount();
+  removeRowBtn.addEventListener('click', () => {
+    const rowCount = getRowCount();
 
-  if (rowCount > MIN) {
-    table.deleteRow(rowCount - 1);
-    updateButtons();
-  }
-});
-
-appendColumnBtn.addEventListener('click', () => {
-  const colCount = getColumnCount();
-
-  if (colCount < MAX) {
-    for (const row of table.rows) {
-      row.insertCell();
+    if (rowCount > MIN) {
+      table.deleteRow(rowCount - 1);
+      updateButtons();
     }
-    updateButtons();
-  }
-});
+  });
 
-removeColumnBtn.addEventListener('click', () => {
-  const colCount = getColumnCount();
+  appendColumnBtn.addEventListener('click', () => {
+    const colCount = getColumnCount();
 
-  if (colCount > MIN) {
-    for (const row of table.rows) {
-      row.deleteCell(colCount - 1);
+    if (colCount < MAX) {
+      for (const row of table.rows) {
+        row.insertCell();
+      }
+      updateButtons();
     }
-    updateButtons();
-  }
-});
+  });
 
-updateButtons();
+  removeColumnBtn.addEventListener('click', () => {
+    const colCount = getColumnCount();
+
+    if (colCount > MIN) {
+      for (const row of table.rows) {
+        row.deleteCell(colCount - 1);
+      }
+      updateButtons();
+    }
+  });
+
+  updateButtons();
+}
+
+
